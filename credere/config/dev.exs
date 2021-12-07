@@ -2,8 +2,8 @@ import Config
 
 # Configure your database
 config :credere, Credere.Repo,
-  username: "postgres",
-  password: "postgres",
+  username: "credere",
+  password: "credere",
   database: "credere_dev",
   hostname: "localhost",
   show_sensitive_data_on_connection_error: true,
