@@ -39,21 +39,65 @@ defmodule Credere.Space do
     |> Repo.insert()
   end
 
-  @doc """
-  Updates a spaceship.
+  def make_move(spaceship, movements) do
+    valid_movements? =
+      Enum.find(
+        movements,
+        fn movement ->
+          spaceship_now = get_spaceship(spaceship.game_session)
 
-  ## Examples
+          spaceship_after =
+            next_movement(spaceship_now, movement, possible_movements(spaceship_now.face))
 
-      iex> update_spaceship(spaceship, %{field: new_value})
-      {:ok, %Spaceship{}}
+          case spaceship_after.valid? do
+            true ->
+              spaceship_after
+              |> Repo.update()
 
-      iex> update_spaceship(spaceship, %{field: bad_value})
-      {:error, %Ecto.Changeset{}}
+              false
 
-  """
-  def update_spaceship(%Spaceship{} = spaceship, attrs) do
+            false ->
+              true
+          end
+        end
+      )
+
+    valid_movements?
+  end
+
+  defp possible_movements(actual_movement) do
+    case actual_movement do
+      "right" -> ["bottom", "top"]
+      "bottom" -> ["left", "right"]
+      "left" -> ["top", "bottom"]
+      "top" -> ["right", "left"]
+    end
+  end
+
+  def update_spaceship(spaceship) do
     spaceship
-    |> Spaceship.new_cordinates_changeset(attrs)
     |> Repo.update()
+  end
+
+  def reset_spaceship(spaceship, attrs) do
+    Repo.get(Spaceship, spaceship.id)
+    |> Spaceship.reset_spaceship_changeset(attrs)
+    |> IO.inspect()
+    |> Repo.update()
+  end
+
+  defp next_movement(spaceship, move, _possible_movements) when move == "M" do
+    spaceship
+    |> Spaceship.new_cordinates_changeset()
+  end
+
+  defp next_movement(spaceship, move, possible_movements) when move == "GD" do
+    spaceship
+    |> Spaceship.new_face_changeset(%{face: Enum.at(possible_movements, 0)})
+  end
+
+  defp next_movement(spaceship, move, possible_movements) when move == "GE" do
+    spaceship
+    |> Spaceship.new_face_changeset(%{face: Enum.at(possible_movements, 1)})
   end
 end

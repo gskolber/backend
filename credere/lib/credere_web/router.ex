@@ -5,8 +5,12 @@ defmodule CredereWeb.Router do
     plug :accepts, ["json"]
   end
 
-  scope "/api", CredereWeb do
+  scope "/api/spaceship", CredereWeb do
     pipe_through :api
+
+    post "/create", SpaceshipController, :start
+    get "/:game_session", SpaceshipController, :status
+    patch "/:game_session", SpaceshipController, :move
   end
 
   # Enables LiveDashboard only for development
