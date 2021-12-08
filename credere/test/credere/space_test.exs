@@ -25,12 +25,13 @@ defmodule Credere.SpaceTest do
     end
 
     test "update_spaceship/2 with valid data updates the spaceship" do
+      update_attrs = %{face: "left", x_cordinate: 1, y_cordinate: 1}
       spaceship = spaceship_fixture()
-      update_attrs = %{face: "left", x_cordinate: 2, y_cordinate: 1}
+      |> Spaceship.new_cordinates_changeset(update_attrs)
 
-      assert {:ok, %Spaceship{} = spaceship} = Space.update_spaceship(spaceship, update_attrs)
+      assert {:ok, %Spaceship{} = spaceship} = Space.update_spaceship(spaceship)
       assert spaceship.face == "left"
-      assert spaceship.x_cordinate == 2
+      assert spaceship.x_cordinate == 1
       assert spaceship.y_cordinate == 1
     end
   end
