@@ -28,7 +28,9 @@ defmodule CredereWeb.SpaceshipController do
   end
 
   def move(conn, %{"movimentos" => movements, "game_session" => game_session}) do
-    initial_spaceship = Space.get_spaceship(game_session)
+    {:ok, initial_spaceship} = Space.get_spaceship(game_session)
+    |> Spaceship.reset_spaceship_changeset()
+    |> Space.update_spaceship()
 
     with nil <- Space.make_move(initial_spaceship, movements),
          new_location = Space.get_spaceship(game_session) do
@@ -36,7 +38,8 @@ defmodule CredereWeb.SpaceshipController do
       |> json(%{
         "x" => new_location.x_cordinate,
         "y" => new_location.y_cordinate,
-        "face" => new_location.face
+        "face" => new_location.face,
+        "ultimo_movimento" => new_location.last_move
       })
     else
       _ ->
