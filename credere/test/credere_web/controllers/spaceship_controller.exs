@@ -26,6 +26,12 @@ defmodule CredereWeb.SpaceshipControllerTest do
       assert face == "right"
       assert game_session == start_game_session
     end
+
+    test "should return an error if the game session is not valid",  %{conn: conn} do
+      conn = get(conn, "/api/spaceship/invalid_game_session")
+
+      assert json_response(conn, 404) == %{"error"=> "Spaceship not found"}
+    end
   end
 
   describe "move" do

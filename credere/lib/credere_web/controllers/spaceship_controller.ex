@@ -15,9 +15,15 @@ defmodule CredereWeb.SpaceshipController do
   end
 
   def status(conn, %{"game_session" => game_session}) do
-    with spaceship <- Space.get_spaceship(game_session) do
+    with spaceship <- Space.get_spaceship(game_session),
+     false <- is_nil(spaceship) do
       conn
       |> json(spaceship)
+    else
+      true ->
+        conn
+        |> put_status(404)
+        |> json(%{:error => "Spaceship not found"})
     end
   end
 

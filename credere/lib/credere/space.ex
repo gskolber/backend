@@ -82,7 +82,6 @@ defmodule Credere.Space do
   def reset_spaceship(spaceship, attrs) do
     Repo.get(Spaceship, spaceship.id)
     |> Spaceship.reset_spaceship_changeset(attrs)
-    |> IO.inspect()
     |> Repo.update()
   end
 
