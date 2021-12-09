@@ -1,5 +1,7 @@
 # Credere
 
+API Documentation found in: https://crederebackend.docs.apiary.io/#
+
 To start your Phoenix server:
 
   * Needs postgres
