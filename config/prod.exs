@@ -11,9 +11,10 @@ import Config
 # before starting your production server.
 
 config :credere, CredereWeb.Endpoint,
-  url: [host: "https://credere-backend-test.herokuapp.com", port: 80]
-# Do not print debug messages in production
-config :logger, level: :info
+  load_from_system_env: true,
+  server: true,
+  http: [port: {:system, "PORT"}],
+  url: [scheme: "https", host: "credere-backend-test.herokuapp.com", port: 443]
 
 # ## SSL Support
 #
