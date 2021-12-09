@@ -15,12 +15,11 @@ defmodule CredereWeb.SpaceshipController do
   end
 
   def status(conn, %{"game_session" => game_session}) do
-    with spaceship <- Space.get_spaceship(game_session),
-         true <- not is_nil(spaceship) do
+    with {:ok, spaceship} <- Space.get_spaceship(game_session) do
       conn
       |> json(spaceship)
     else
-      false ->
+      {:error, _} ->
         conn
         |> put_status(404)
         |> json(%{:error => "Spaceship not found"})
@@ -28,13 +27,11 @@ defmodule CredereWeb.SpaceshipController do
   end
 
   def move(conn, %{"movimentos" => movements, "game_session" => game_session}) do
-    {:ok, initial_spaceship} =
-      Space.get_spaceship(game_session)
-      |> Spaceship.reset_spaceship_changeset()
-      |> Space.update_spaceship()
+    {status, initial_spaceship} = Space.get_valid_spaceship(game_session)
 
-    with nil <- Space.make_move(initial_spaceship, movements),
-         new_location = Space.get_spaceship(game_session) do
+    with {:ok, _initial_spaceship} <- {status, initial_spaceship},
+         {:valid} <- Space.make_move(initial_spaceship, movements),
+         {:ok, new_location} = Space.get_spaceship(game_session) do
       conn
       |> json(%{
         "x" => new_location.x_cordinate,
@@ -43,7 +40,12 @@ defmodule CredereWeb.SpaceshipController do
         "ultimo_movimento" => new_location.last_move
       })
     else
-      _ ->
+      {:error, _} ->
+        conn
+        |> put_status(404)
+        |> json(%{:error => "Spaceship not found"})
+
+      {:illegal} ->
         Space.reset_spaceship(initial_spaceship, %{
           x_cordinate: initial_spaceship.x_cordinate,
           y_cordinate: initial_spaceship.y_cordinate,

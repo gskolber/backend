@@ -22,7 +22,26 @@ defmodule Credere.Space do
       nil
 
   """
-  def get_spaceship(game_session), do: Repo.get_by(Spaceship, %{game_session: game_session})
+  def get_spaceship(game_session) do
+    spaceship = Repo.get_by(Spaceship, %{game_session: game_session})
+
+    if not is_nil(spaceship) do
+      {:ok, spaceship}
+    else
+      {:error, nil}
+    end
+  end
+
+  def get_valid_spaceship(game_session) do
+    with {:ok, spaceship} <- get_spaceship(game_session) do
+      spaceship
+      |> Spaceship.reset_spaceship_changeset()
+      |> update_spaceship()
+    else
+      {:error, nil} ->
+        {:error, nil}
+    end
+  end
 
   @doc """
   Creates a spaceship and start his adventure!!.
@@ -44,7 +63,7 @@ defmodule Credere.Space do
       Enum.find(
         movements,
         fn movement ->
-          spaceship_now = get_spaceship(spaceship.game_session)
+         {:ok, spaceship_now} = get_spaceship(spaceship.game_session)
 
           spaceship_after =
             next_movement(spaceship_now, movement, possible_movements(spaceship_now.face))
@@ -62,7 +81,11 @@ defmodule Credere.Space do
         end
       )
 
-    valid_movements?
+    if is_nil(valid_movements?) do
+      {:valid}
+    else
+      {:illegal}
+    end
   end
 
   defp possible_movements(actual_movement) do

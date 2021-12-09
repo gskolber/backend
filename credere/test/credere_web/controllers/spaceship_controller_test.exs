@@ -68,5 +68,14 @@ defmodule CredereWeb.SpaceshipControllerTest do
 
       assert error == "Calma amigo. Aqui em marte esse movimento foi declarado ilegal!"
     end
+
+    test "should return an error when game_session does not exists", %{conn: conn} do
+      conn =
+        patch(conn, "/api/spaceship/invalid_game_session", movimentos: ["GD", "GD", "M", "M"])
+
+      %{"error" => error} = json_response(conn, 404)
+
+      assert error == "Spaceship not found"
+    end
   end
 end

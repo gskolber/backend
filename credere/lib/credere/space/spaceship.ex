@@ -38,7 +38,7 @@ defmodule Credere.Space.Spaceship do
   def reset_spaceship_changeset(spaceship, attrs \\ %{}) do
     spaceship
     |> cast(attrs, [:x_cordinate, :y_cordinate, :face, :last_move])
-    |> put_change(:last_move, " ")
+    |> put_change(:last_move, "")
   end
 
   defp add_next_cordinate(changeset) do
