@@ -32,6 +32,9 @@ defmodule Credere.Space do
     end
   end
 
+  @doc """
+  Get a spaceship and sanitize his last move field.
+  """
   def get_valid_spaceship(game_session) do
     with {:ok, spaceship} <- get_spaceship(game_session) do
       spaceship
@@ -58,12 +61,19 @@ defmodule Credere.Space do
     |> Repo.insert()
   end
 
+  @doc """
+  Updates a spaceship.
+  Receives a spaceship and a list of movements
+  If all movements are valid, the spaceship is updated.
+  If not all movements are valid, the spaceship is not updated and return to the initial state
+  """
+
   def make_move(spaceship, movements) do
     valid_movements? =
       Enum.find(
         movements,
         fn movement ->
-         {:ok, spaceship_now} = get_spaceship(spaceship.game_session)
+          {:ok, spaceship_now} = get_spaceship(spaceship.game_session)
 
           spaceship_after =
             next_movement(spaceship_now, movement, possible_movements(spaceship_now.face))
@@ -97,10 +107,21 @@ defmodule Credere.Space do
     end
   end
 
+  @doc """
+
+  Receives a spaceship and updates him
+  """
+
   def update_spaceship(spaceship) do
     spaceship
     |> Repo.update()
   end
+
+  @doc """
+
+  Receives a spaceship and turn him to your initial value
+
+  """
 
   def reset_spaceship(spaceship, attrs) do
     Repo.get(Spaceship, spaceship.id)

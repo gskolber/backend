@@ -45,7 +45,8 @@ defmodule Credere.MixProject do
       {:gettext, "~> 0.18"},
       {:jason, "~> 1.2"},
       {:plug_cowboy, "~> 2.5"},
-      {:uuid, "~> 1.1"}
+      {:uuid, "~> 1.1"},
+      {:cors_plug, "~> 2.0"},
     ]
   end
 

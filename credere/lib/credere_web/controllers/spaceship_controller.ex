@@ -10,6 +10,7 @@ defmodule CredereWeb.SpaceshipController do
     with uuid <- uuid4(),
          {:ok, spaceship} <- Space.create_spaceship(%Spaceship{}, uuid) do
       conn
+      |> put_status(201)
       |> json(spaceship)
     end
   end
@@ -17,6 +18,7 @@ defmodule CredereWeb.SpaceshipController do
   def status(conn, %{"game_session" => game_session}) do
     with {:ok, spaceship} <- Space.get_spaceship(game_session) do
       conn
+      |> put_status(200)
       |> json(spaceship)
     else
       {:error, _} ->

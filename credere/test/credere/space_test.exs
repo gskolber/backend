@@ -10,7 +10,7 @@ defmodule Credere.SpaceTest do
 
     test "get_spaceship/1 returns the spaceship with given game_session" do
       spaceship = spaceship_fixture()
-      {:ok ,find_spaceship} = Space.get_spaceship(spaceship.game_session)
+      {:ok, find_spaceship} = Space.get_spaceship(spaceship.game_session)
       assert find_spaceship == spaceship
     end
 
