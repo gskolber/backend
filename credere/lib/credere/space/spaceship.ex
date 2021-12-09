@@ -8,7 +8,7 @@ defmodule Credere.Space.Spaceship do
     field :x_cordinate, :integer, default: 0, required: true
     field :y_cordinate, :integer, default: 0, required: true
     field :game_session, :string
-    field :last_move, :string, default: " "
+    field :last_move, :string, default: "Você começou a navegar e: "
 
     timestamps()
   end
@@ -24,15 +24,15 @@ defmodule Credere.Space.Spaceship do
     spaceship
     |> cast(attrs, [:x_cordinate, :y_cordinate, :face])
     |> add_next_cordinate()
-    |> add_description_movement
-    |> validate_number(:x_cordinate, less_than: 5, greater_than: -1)
-    |> validate_number(:y_cordinate, less_than: 5, greater_than: -1)
+    |> validate_number(:x_cordinate, less_than: 5, greater_than: 0)
+    |> validate_number(:y_cordinate, less_than: 5, greater_than: 0)
+    |> add_description_movement()
   end
 
   def new_face_changeset(spaceship, attrs \\ %{}) do
     spaceship
     |> cast(attrs, [:face, :last_move])
-    |> add_description_face
+    |> add_description_face()
   end
 
   def reset_spaceship_changeset(spaceship, attrs \\ %{}) do
@@ -50,11 +50,29 @@ defmodule Credere.Space.Spaceship do
     end
   end
 
-  defp add_description_movement(changeset) do
-    changeset |> put_change(:last_move, changeset.data.last_move <> "Você se moveu para #{changeset.data.x_cordinate}, #{changeset.data.y_cordinate}, ")
+  defp add_description_movement(changeset) when not is_nil(changeset.changes.x_cordinate) do
+    changeset
+    |> put_change(
+      :last_move,
+      changeset.data.last_move <>
+        "Você se moveu para #{changeset.changes.x_cordinate}, #{changeset.data.y_cordinate},"
+    )
+  end
+
+  defp add_description_movement(changeset) when not is_nil(changeset.changes.y_cordinate) do
+    changeset
+    |> put_change(
+      :last_move,
+      changeset.data.last_move <>
+        "Você se moveu para #{changeset.data.x_cordinate}, #{changeset.changes.y_cordinate},"
+    )
   end
 
   defp add_description_face(changeset) do
-    changeset |> put_change(:last_move, changeset.data.last_move <> "Você se virou para #{changeset.data.face}, " )
+    changeset
+    |> put_change(
+      :last_move,
+      changeset.data.last_move <> "Você se virou para #{changeset.changes.face},"
+    )
   end
 end

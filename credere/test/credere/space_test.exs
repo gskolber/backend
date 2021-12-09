@@ -15,7 +15,7 @@ defmodule Credere.SpaceTest do
 
     test "create_spaceship/1 with valid data creates a spaceship" do
       uuid = UUID.uuid4()
-      valid_attrs = %{face: "right", x_cordinate: 0, y_cordinate: 0}
+      valid_attrs = %{face: "direita", x_cordinate: 0, y_cordinate: 0}
 
       assert {:ok, %Spaceship{} = spaceship} = Space.create_spaceship(%Spaceship{}, uuid)
       assert spaceship.face == valid_attrs.face
@@ -26,8 +26,10 @@ defmodule Credere.SpaceTest do
 
     test "update_spaceship/2 with valid data updates the spaceship" do
       update_attrs = %{face: "left", x_cordinate: 1, y_cordinate: 1}
-      spaceship = spaceship_fixture()
-      |> Spaceship.new_cordinates_changeset(update_attrs)
+
+      spaceship =
+        spaceship_fixture()
+        |> Spaceship.new_cordinates_changeset(update_attrs)
 
       assert {:ok, %Spaceship{} = spaceship} = Space.update_spaceship(spaceship)
       assert spaceship.face == "left"

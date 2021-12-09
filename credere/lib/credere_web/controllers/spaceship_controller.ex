@@ -16,11 +16,11 @@ defmodule CredereWeb.SpaceshipController do
 
   def status(conn, %{"game_session" => game_session}) do
     with spaceship <- Space.get_spaceship(game_session),
-     false <- is_nil(spaceship) do
+         true <- not is_nil(spaceship) do
       conn
       |> json(spaceship)
     else
-      true ->
+      false ->
         conn
         |> put_status(404)
         |> json(%{:error => "Spaceship not found"})
@@ -28,9 +28,10 @@ defmodule CredereWeb.SpaceshipController do
   end
 
   def move(conn, %{"movimentos" => movements, "game_session" => game_session}) do
-    {:ok, initial_spaceship} = Space.get_spaceship(game_session)
-    |> Spaceship.reset_spaceship_changeset()
-    |> Space.update_spaceship()
+    {:ok, initial_spaceship} =
+      Space.get_spaceship(game_session)
+      |> Spaceship.reset_spaceship_changeset()
+      |> Space.update_spaceship()
 
     with nil <- Space.make_move(initial_spaceship, movements),
          new_location = Space.get_spaceship(game_session) do
@@ -50,8 +51,9 @@ defmodule CredereWeb.SpaceshipController do
         })
 
         conn
+        |> put_status(400)
         |> json(%{
-          "error" => "Não foi possível mover o espaçonave"
+          "error" => "Calma amigo. Aqui em marte esse movimento foi declarado ilegal!"
         })
     end
   end

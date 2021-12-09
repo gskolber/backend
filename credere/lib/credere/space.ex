@@ -92,11 +92,16 @@ defmodule Credere.Space do
 
   defp next_movement(spaceship, move, possible_movements) when move == "GD" do
     spaceship
-    |> Spaceship.new_face_changeset(%{face: Enum.at(possible_movements, 0), last_move: spaceship.last_move})
+    |> Spaceship.new_face_changeset(%{
+      face: Enum.at(possible_movements, 0),
+      last_move: spaceship.last_move
+    })
   end
 
   defp next_movement(spaceship, move, possible_movements) when move == "GE" do
     spaceship
-    |> Spaceship.new_face_changeset(%{face: Enum.at(possible_movements, 1, last_move: spaceship.last_move)})
+    |> Spaceship.new_face_changeset(%{
+      face: Enum.at(possible_movements, 1, last_move: spaceship.last_move)
+    })
   end
 end
